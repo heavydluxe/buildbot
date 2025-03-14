@@ -17,10 +17,7 @@ sudo -v
 while true; do sudo -n true; sleep 15; kill -0 "$$" || exit; done 2>/dev/null &
 
 # Configure initial git global variables and get repos
-echo "Configuring git..."
-git config --global user.name "Brian Dellinger"
-git config --global user.email "bdellinger@gmail.com"
-git config --global init.defaultBranch main
+
 
 ## Install brews
 
