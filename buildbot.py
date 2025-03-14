@@ -1,7 +1,5 @@
 import os, sys, time
 
-timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
-
 def restore():
     os.system("figlet RESTORING")
     print("Setting new system parameters and restoring files...")
@@ -12,7 +10,7 @@ def restore():
     
     
     
-def backup(timestamp):
+def backup():
     # Implement the backup logic here
     os.system("figlet BackItUp")
     print("Backing up critical files")
@@ -39,7 +37,6 @@ def backup(timestamp):
     time.sleep(1)
     
     # Clean out emacs backups
-    os.system("figlet CleanUp")
     print("A little housekeeping, now...")
     print(">>> Cleaning out temp files in ~/zzzemacs-backups")
     os.system("rm ~/zzzemacs-backups/*")
@@ -48,29 +45,30 @@ def backup(timestamp):
     # All Done...
     os.system("figlet COMPLETE")
     print("All critical files have been backed up.")
-    print("Commit the BuildBot Repo ASAP to cloudify your changes!")
     
-    # git files into git(hub)
-    commit = input("Should I push these changes to git(hub) for you now? (Y/N): ")
-    if commit.upper() == "Y":
+    # get files into git(hub)
+    commit_now = input("Should I push these changes to git(hub) for you now? (Y/N): ")
+    if commit_now.upper() == "Y":
+        timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
         os.system("git add .")
-        os.system('git commit -m "Backup of critical files {timestamp}"')
-        os.system("git push origin main")
-        figlet("GIT PUSHED")
+        os.system(f'git commit -m "Backup of critical files {timestamp}"')
+        os.system("git push -u origin main")
+        figlet("GIT-ED")
         
     else:
         print("Don't forget to push later, fool.")
-        
+    
+    os.sys("figlet ALL DONE")        
     sys.exit(1)
 
-def main(timestamp):
+def main():
     job = input ("Am I [B]acking up or [R]estoring? ")
     if job == "B":
-        backup(timestamp)
+        backup()
     elif job == "R":
-        restore(timestamp)
+        restore()
     else:
         print("Invalid choice. Please enter 'B' for Backup or 'R' for Restore.")
         sys.exit(1)       
 
-main(timestamp)
+main()
