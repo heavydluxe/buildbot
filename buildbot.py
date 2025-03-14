@@ -54,8 +54,7 @@ def backup():
         
     else:
         print("DO NOT FORGET TO PUSH LATER, FOOL!")
-    
-    os.sys("figlet ALL DONE")        
+        os.sys("figlet DONE")        
     sys.exit(1)
 
 def main():
