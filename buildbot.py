@@ -1,6 +1,18 @@
 import os, sys, time
 
-def backup():
+timestamp = time.strftime("%Y-%m-%d_%H:%M:%S")
+
+def restore():
+    os.system("figlet RESTORING")
+    print("Setting new system parameters and restoring files...")
+    
+    
+    
+    brew_clis = []
+    
+    
+    
+def backup(timestamp):
     # Implement the backup logic here
     os.system("figlet BackItUp")
     print("Backing up critical files")
@@ -37,22 +49,28 @@ def backup():
     os.system("figlet COMPLETE")
     print("All critical files have been backed up.")
     print("Commit the BuildBot Repo ASAP to cloudify your changes!")
+    
+    # git files into git(hub)
+    commit = input("Should I push these changes to git(hub) for you now? (Y/N): ")
+    if commit.upper() == "Y":
+        os.system("git add .")
+        os.system('git commit -m "Backup of critical files {timestamp}"')
+        os.system("git push origin main")
+        figlet("GIT PUSHED")
+        
+    else:
+        print("Don't forget to push later, fool.")
+        
     sys.exit(1)
 
-def restore():
-    # Implement the restore logic here
-    print("Restoring files...")
-    # Example: Copy files from a backup directory back to the original location
-    os.system("cp -r /path/to/backup /path/to/source")
-
-def main():
+def main(timestamp):
     job = input ("Am I [B]acking up or [R]estoring? ")
     if job == "B":
-        backup()
+        backup(timestamp)
     elif job == "R":
-        restore()
+        restore(timestamp)
     else:
         print("Invalid choice. Please enter 'B' for Backup or 'R' for Restore.")
-        sys.exit(1)
-        
-main()
+        sys.exit(1)       
+
+main(timestamp)
