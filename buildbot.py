@@ -12,6 +12,8 @@ def restore():
     
 
 def backup():
+    
+    
     # Implement the backup logic here
     os.system("figlet BackItUp")
     print("Backing up critical files")
@@ -55,6 +57,7 @@ def backup():
     else:
         print("DO NOT FORGET TO PUSH LATER, FOOL!")
         os.sys("figlet DONE")        
+    
     sys.exit(1)
 
 def main():
