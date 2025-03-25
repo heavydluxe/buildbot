@@ -1,19 +1,36 @@
 import os, sys, time
 
-def restore():
-    os.system("figlet RESTORING")
-    print("Setting new system parameters and restoring files...")
-    
-    # Set system-wide preferences
+def restore_system():
     print("Configuring git...")
     os.sys('git config --global user.name "Brian Dellinger"')
     os.sys('git config --global user.email "bdellinger@gmail.com"')
     os.sys('git config --global init.defaultBranch main')
     
-
+def restore_brews():
+    print("Restoring Homebrew Files")
+    # Start with brew cli-ish tools
+    print("Installing Homebrew CLI files")
+    brew_clis = ['emacs', 'oh-my-posh', 'colima', 'docker', 'docker-completion',
+                 'gh', 'macmon', 'nmap', 'ollama', 'speedtest-cli', 'sqlite', 
+                 'tcpdump', 'termshark', 'figlet', 'dockutil', 'tree']
+    for brew in brew_clis:
+        print(f"Installing {brew} via (home)brew")
+        os.sys(f'brew install {brew}')
+        sleep(1)
+    
+    # Now to brew casks installation
+    print("Installing Homebrew Casks")
+    brew_casks = ['font-jetbrains-mono', 'font-jetbrains-mono-nerd-font',
+                  'font-meslo-lg-nerd-font','1password', 'spotify', 'obs', 
+                  'visual-studio-code', 'splashtop-business', 'windows-app']
+    for cask in brew_casks:
+        print(f"Installing {cask} via (home)brew")
+        os.sys(f'brew install {cask}')
+        sleep(1)
+    
+    
+   
 def backup():
-    
-    
     # Implement the backup logic here
     os.system("figlet BackItUp")
     print("Backing up critical files")
@@ -52,12 +69,10 @@ def backup():
         os.system("git add .")
         os.system(f'git commit -m "Backup of critical files {timestamp}"')
         os.system("git push -u origin main")
-        os.system("figlet GIT-ED")
-        
+        os.system("figlet GIT-ED")    
     else:
         print("DO NOT FORGET TO PUSH LATER, FOOL!")
-        os.sys("figlet DONE")        
-    
+        os.sys("figlet DONE") 
     sys.exit(1)
 
 def main():
@@ -65,6 +80,8 @@ def main():
     if job.upper() == "B":
         backup()
     elif job.upper() == "R":
-        restore()   
-
+        os.system("figlet RESTORING")
+        print("Setting new system parameters and restoring files...")
+        restore_system()
+        
 main()
