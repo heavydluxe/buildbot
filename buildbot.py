@@ -96,7 +96,7 @@ def cleanup_and_exit():
     
 def backup():
     # Implement the backup logic here
-    os.systemtem("figlet BackItUp")
+    os.system("figlet BackItUp")
     print("Backing up critical files")
     time.sleep(1)
     
@@ -104,36 +104,36 @@ def backup():
     
     # Backup Emacs Config
     print(">>> Backing up emacs config (~/.emacs)")
-    os.systemtem("cp ~/.emacs ~/sbemode/buildbot/configs/backup.emacs.lsp")
+    os.system("cp ~/.emacs ~/sbemode/buildbot/configs/backup.emacs.lsp")
     time.sleep(1)
     
     # Backup Zshrc Config
     print(">>> Backing up zsh config (~/.zshrc)")
-    os.systemtem("cp ~/.zshrc ~/sbemode/buildbot/configs/backup.zshrc")
+    os.system("cp ~/.zshrc ~/sbemode/buildbot/configs/backup.zshrc")
     time.sleep(1)
     
     # Backup OhMyPosh Config
     print(">>> Backing up oh-my-posh config (~/.mytheme.omp.json)")
-    os.systemtem("cp ~/.mytheme.omp.json ~/sbemode/buildbot/configs/backup.mytheme.omp.json")
+    os.system("cp ~/.mytheme.omp.json ~/sbemode/buildbot/configs/backup.mytheme.omp.json")
     time.sleep(1)
     
     # Clean out emacs backups
     print("A little housekeeping, now...")
     print(">>> Cleaning out temp files in ~/zzzemacs-backups")
-    os.systemtem("rm ~/zzzemacs-backups/*")
+    os.system("rm ~/zzzemacs-backups/*")
     time.sleep(1)
     
     # All Done...
-    os.systemtem("figlet COMPLETE")
+    os.system("figlet COMPLETE")
     print("All critical files have been backed up.")
     # get files into git(hub)
     commit_now = input("Should I push these changes to git(hub) for you now? (Y/N): ")
     if commit_now.upper() == "Y":
         timestamp = time.strftime("%Y-%m-%d @ %H:%M:%S")
-        os.systemtem("git add .")
-        os.systemtem(f'git commit -m "Backup of critical files {timestamp}"')
-        os.systemtem("git push -u origin main")
-        os.systemtem("figlet GIT-ED")    
+        os.system("git add .")
+        os.system(f'git commit -m "Backup of critical files {timestamp}"')
+        os.system("git push -u origin main")
+        os.system("figlet GIT-ED")    
     else:
         print("DO NOT FORGET TO PUSH LATER, FOOL!")
         os.system("figlet DONE")
