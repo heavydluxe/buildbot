@@ -1,4 +1,5 @@
 import os, sys, time
+
     
 def restore_brews():
     # Brew Items - CLIs and Casks
@@ -12,12 +13,12 @@ def restore_brews():
                   'font-meslo-lg-nerd-font', 'obs', 'splashtop-business',
                   'spotify', 'visual-studio-code', 'windows-app']
     
-    # Run th restoration loops.    
+    # Run the restoration loops.    
     print("Restoring Homebrew Files")
     print("Installing Homebrew CLI files")
-    for brew in brew_clis:
-        print(f"Installing {brew} via (home)brew")
-        os.system(f'brew install {brew}')
+    for cli in brew_clis:
+        print(f"Installing {cli} via (home)brew")
+        os.system(f'brew install {cli}')
         time.sleep(1)
     print("Installing Homebrew Casks")
     for cask in brew_casks:
