@@ -1,10 +1,9 @@
 import os, sys, time
 
-    
 def restore_brews():
     # Brew Items - CLIs and Casks
     brew_clis = ['bat', 'colima', 'coreutils', 'docker', 'docker-completion',
-                 'dockutil', 'emacs', 'figlet', 'gh', 'macmon', 'nmap',
+                 'dockutil', 'emacs', 'figlet', 'gh', 'git', 'macmon', 'nmap',
                  'oh-my-posh', 'ollama', 'speedtest-cli', 'sqlite',
                  'tcpdump', 'termshark', 'tree']
     
@@ -26,8 +25,8 @@ def restore_brews():
         os.system(f'brew install {cask}')
         time.sleep(1)
 
-def restore_settings():
-    # Set Sysname
+def sys_prep():
+     # Set Sysname
     hostname = input("Enter NEW Hostname for this device: ")
     print("You will need to enter your sudo password to proceed")
     os.system(f'sudo scutil --set HostName "{hostname.lower()}"')
@@ -35,23 +34,25 @@ def restore_settings():
     os.system(f'sudo scutil --set LocalHostName "{hostname.lower()}"')
     print(f'This computer has been renamed {hostname.lower()}')
     
-    # Configure git
+    # Configure git settings
     print("Configuring git...")
     os.system('git config --global user.name "Brian Dellinger"')
     os.system('git config --global user.email "bdellinger@gmail.com"')
     os.system('git config --global init.defaultBranch main')
     
-    # OhMyZsh & related secret prep
+    # OhMyZsh & related secret sauce
     os.system('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
     os.system('mkdir ~/.cache')
     os.system('git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting')
     os.system('git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions')
+
+def restore_settings():
     
     # System Files Restore
     print('Restoring System Files from Repo')
-    os.system('cp ~/sbemode/buildbot/configs/backup.emacs.lsp ~/.emacs')
-    os.system('cp ~/sbemode/buildbot/configs/backup.zshrc ~/.zshrc')
-    os.system('cp ~/sbemode/buildbot/configs/backup.mytheme.omp.json ~/.mytheme.omp.json')
+    os.system('cp ./configs/backup.emacs.lsp ~/.emacs')
+    os.system('cp ./configs/backup.zshrc ~/.zshrc')
+    os.system('cp ./configs/backup.mytheme.omp.json ~/.mytheme.omp.json')
     
     # Dock Cleanup
     dock_apps = ['/Applications/Visual Studio Code.app',  
@@ -84,7 +85,7 @@ def launch_apps():
     os.system('brew services start colima')
     os.system('brew services start ollama')
 
-def cleanup_and_exit():
+def final_prep():
     # setup sbemode folder
     os.system('mkdir ~/sbemode')
     os.system('mkdir ~/sbemode/code')
@@ -93,7 +94,6 @@ def cleanup_and_exit():
     print('----> Clone orgmode, ai_materials, and other code repos')
     os.system('cd ~/sbemode')
     os.system('figlet DONE')
-    sys.exit(1)
     
 def backup():
     # Implement the backup logic here
@@ -146,9 +146,10 @@ def main():
         backup()
     elif job.upper() == "R":
         print("Beginning Restoration Work")
+        sys_prep()
         restore_brews()
         restore_settings()
         launch_apps()
-        cleanup_and_exit()
+        final_prep()
         
 main()
