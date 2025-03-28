@@ -21,4 +21,7 @@ alias sb='cd ~/sbemode/orgmode && emacs --eval "(progn (org-agenda nil \"a\") (o
 alias ol='ollama'
 alias olon='brew services restart ollama'
 alias oloff='brew services stop ollama'
-alias ls='ls -hl'
+
+# Misc 
+alias ls='ls -hal'
+alias buildbot='cd ~/sbemode/buildbot && python3 buildbot.py'
