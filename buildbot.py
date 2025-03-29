@@ -53,17 +53,18 @@ def restore_settings():
     os.system('cp ./configs/backup.emacs.lsp ~/.emacs')
     os.system('cp ./configs/backup.zshrc ~/.zshrc')
     os.system('cp ./configs/backup.mytheme.omp.json ~/.mytheme.omp.json')
+    os.system('cp ./configs/backup.continue.config.template.yaml ~/.continue/config.template.yaml')
     
-    # Dock Cleanup
-    dock_apps = ['/Applications/Visual Studio Code.app',  
+    # Dock Cleanup; make sure to mark off space-named apps with ""s
+    dock_apps = ['/Applications/"Visual Studio Code.app"',  
                  '/Applications/Firefox.app',
-                 'Applications/Google Chrome.app',
-                 '/System/Applications/System Settings.app',
+                 '/Applications/"Google Chrome".app',
+                 '/System/Applications/"System Settings.app"',
                  '/Applications/1Password.app',
-                 '/Applications/Windows App.app',
+                 '/Applications/"Windows App".app',
                  '/Applications/zoom.us.app',
                  '/Applications/GlobalProtect.app',
-                 '/Applications/Splashtop Business.app',
+                 '/Applications/"Splashtop Business.app"',
                  '/Applications/Spotify.app']
     print('Installing dockutil and clearing the decks... er, docks.')
     os.system('dockutil --remove all')
@@ -75,11 +76,11 @@ def restore_settings():
 def launch_apps():
     # Start the GUI apps and get them configured...
     print('Opening key apps for configuration.')
-    os.system('open -n /Applications/Google Chrome.app')
+    os.system('open -n /Applications/"Google Chrome.app"')
     os.system('open -n /Applications/1Password.app')
     os.system('open -n /Applications/Firefox.app')
-    os.system('open -n /Applications/Visual Studio Code.app')
-    os.system('open -n /Applications/Splashtop Business.app')
+    os.system('open -n /Applications/"Visual Studio Code.app"')
+    os.system('open -n /Applications/"Splashtop Business.app"')
     
     # Launch brew services
     os.system('brew services start colima')
@@ -105,17 +106,22 @@ def backup():
     
     # Backup Emacs Config
     print(">>> Backing up emacs config (~/.emacs)")
-    os.system("cp ~/.emacs ~/sbemode/buildbot/configs/backup.emacs.lsp")
+    os.system("cp ~/.emacs ./configs/backup.emacs.lsp")
     time.sleep(1)
     
     # Backup Zshrc Config
     print(">>> Backing up zsh config (~/.zshrc)")
-    os.system("cp ~/.zshrc ~/sbemode/buildbot/configs/backup.zshrc")
+    os.system("cp ~/.zshrc ./configs/backup.zshrc")
     time.sleep(1)
     
     # Backup OhMyPosh Config
     print(">>> Backing up oh-my-posh config (~/.mytheme.omp.json)")
-    os.system("cp ~/.mytheme.omp.json ~/sbemode/buildbot/configs/backup.mytheme.omp.json")
+    os.system("cp ~/.mytheme.omp.json ./configs/backup.mytheme.omp.json")
+    time.sleep(1)
+    
+    # Backup Continue YAML Config
+    print(">>> Backing up Continue plugin YAML config (~/.continue/config.yaml)")
+    os.system("cp ~/.continue/config.template.yaml ./configs/backup.continue.config.template.yaml")
     time.sleep(1)
     
     # Clean out emacs backups

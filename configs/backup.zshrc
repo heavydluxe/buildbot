@@ -10,6 +10,9 @@ eval "$(oh-my-posh init zsh --config ~/.mytheme.omp.json)"
 zstyle ':omz:update' mode auto        # update automatically without asking
 zstyle ':omz:update' frequency 14
 
+# Load secrets file
+source ~/.secrets
+
 # Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"
 

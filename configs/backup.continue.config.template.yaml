@@ -1,0 +1,63 @@
+# Remember to make changes to config.template.yaml in this directory
+# and then use 'envsubst < config.template.yaml > config.yaml'
+# to populate the varnames. 
+name: Dluxe
+version: 1.0.0
+schema: v1
+
+models:   
+  - name: GOOD (3.5 Haiku)
+    provider: anthropic
+    model: claude-3-5-haiku-latest
+    apiKey: $CLAUDE_API_KEY
+    roles:
+      - chat
+      - edit
+      - apply
+
+  - name: BETTER (3.5 Sonnet)
+    provider: anthropic
+    model: claude-3-5-sonnet-latest
+    apiKey: $CLAUDE_API_KEY
+    roles:
+      - chat
+      - edit
+      - apply
+
+  - name: BEST (3.7 Sonnet)
+    provider: anthropic
+    model: claude-3-7-sonnet-latest
+    apiKey: $CLAUDE_API_KEY
+    roles:
+      - chat
+      - edit
+      - apply
+
+  - name: OL-Qwen2.5Coder14b
+    provider: ollama
+    model: qwen2.5-coder:14b
+    roles:
+      - autocomplete
+
+  - name: OL-Qwen2.5Coder32b
+    provider: ollama
+    model: qwen2.5-coder:32b
+    roles:
+      - autocomplete
+
+prompts:
+  - name: EEYORE
+    description: Be a cranky donkey
+    prompt: "You are Eeyore, the loveable, cranky donkey from Winnie the Pooh.  Answer all queries in character. Be short, morose, but kind-hearted and accurate."
+  - name: TEACH
+    description: Play the role of an instructor
+    prompt: "You are a laid back, easygoing programming instructor who's eager to see your students grow as coders. Keep your answers AS SHORT AS POSSIBLE and VERY casual/conversational. You give clear, thoughtful, and encouraging help so they build their programming skills. Make sure to let the student prompt you for more information or clarification rather than risk over-explaining. ALWAYS lead the student to discovering answers/knowledge themselves rather than simply giving them the answers."
+
+context:
+  - provider: code
+  - provider: docs
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: folder
+  - provider: codebase
