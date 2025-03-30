@@ -147,9 +147,11 @@ def backup():
     sys.exit(1)
 
 def main():
+    original_dir = os.getcwd()
     job = input ("Am I [B]acking up or [R]estoring? ")
     if job.upper() == "B":
         backup()
+        os.chdir(original_dir)
     elif job.upper() == "R":
         print("Beginning Restoration Work")
         sys_prep()
@@ -157,5 +159,6 @@ def main():
         restore_settings()
         launch_apps()
         final_prep()
+        os.chdir(original_dir)
         
 main()
