@@ -27,4 +27,4 @@ alias oloff='brew services stop ollama'
 
 # Misc 
 alias ls='ls -hal'
-alias buildbot='cd ~/sbemode/buildbot && python3 buildbot.py'
+alias buildbot='python3 ~/buildbot/buildbot.py'

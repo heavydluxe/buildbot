@@ -138,16 +138,18 @@ def backup():
     if commit_now.upper() == "Y":
         timestamp = time.strftime("%Y-%m-%d @ %H:%M:%S")
         os.system("git add .")
-        os.system(f'git commit -m "Backup of critical files {timestamp}"')
+        os.system(f'git commit -m "Buildbot copy of critical files {timestamp}"')
         os.system("git push -u origin main")
         os.system("figlet GIT-ED")    
     else:
         print("DO NOT FORGET TO PUSH LATER, FOOL!")
         os.system("figlet DONE")
-    sys.exit(1)
 
 def main():
+    # Set variables
+    userid = os.getlogin()
     original_dir = os.getcwd()
+    os.chdir(f'/Users/{userid}/buildbot')
     job = input ("Am I [B]acking up or [R]estoring? ")
     if job.upper() == "B":
         backup()
@@ -159,6 +161,5 @@ def main():
         restore_settings()
         launch_apps()
         final_prep()
-        os.chdir(original_dir)
         
 main()
