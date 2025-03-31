@@ -120,7 +120,7 @@ def backup():
     time.sleep(1)
     
     # Backup Continue YAML Config
-    print(">>> Backing up Continue plugin YAML config (~/.continue/config.yaml)")
+    print(">>> Backing up Continue's config template (~/.continue/config.template.yaml)")
     os.system("cp ~/.continue/config.template.yaml ./configs/backup.continue.config.template.yaml")
     time.sleep(1)
     
