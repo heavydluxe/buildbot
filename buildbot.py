@@ -39,6 +39,7 @@ def sys_prep():
     os.system('git config --global user.name "Brian Dellinger"')
     os.system('git config --global user.email "bdellinger@gmail.com"')
     os.system('git config --global init.defaultBranch main')
+    os.system('git config --global alias.graph "log --graph"')
     
     # OhMyZsh & related secret sauce
     os.system('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
