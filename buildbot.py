@@ -91,9 +91,11 @@ def final_prep():
     # setup sbemode folder
     os.system('mkdir ~/sbemode')
     os.system('mkdir ~/sbemode/code')
+    os.system('touch ~/.secrets')
     print('DO NOT FORGET to do the following things before you are done!')
     print('----> run "gh auth" to get github cli setup')
     print('----> Clone orgmode, ai_materials, and other code repos')
+    print('Populate ~/.secrets file with API Keys as needed...')
     os.system('cd ~/sbemode')
     os.system('figlet DONE')
     
