@@ -1,4 +1,4 @@
-;; Include deft load path at start and run package
+;; Include deft load path at start and run package!
 (add-to-list 'load-path "~/.deft")
 (require 'deft)
 
