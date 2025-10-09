@@ -24,7 +24,7 @@ alias sb='cd ~/sbemode/orgmode && emacs --eval "(progn (org-agenda nil \"a\") (o
 alias ol='ollama'
 alias olon='brew services restart ollama'
 alias oloff='brew services stop ollama'
-alias brupdate='brew update && brew upgrade && brew services restart --all'
+alias brupdate='brew update && brew upgrade && figlet refreshing && brew services restart --all'
 
 # Misc 
 alias ls='ls -hal'
