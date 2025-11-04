@@ -149,12 +149,19 @@ def backup():
         print("DO NOT FORGET TO PUSH LATER, FOOL!")
         os.system("figlet DONE")
 
+def update():
+    os.system("brew update && brew upgrade")
+    os.system("brew upgrade")
+    os.system("figlet rebrewing svcs && brew services restart --all")
+    os.system("figlet done-ish")
+    print("Run 'source ~/.zshrc' to refresh your shell configuration.")
+    
 def main():
     # Set variables
     userid = os.getlogin()
     original_dir = os.getcwd()
     os.chdir(f'/Users/{userid}/buildbot')
-    job = input ("Am I [B]acking up or [R]estoring? ")
+    job = input ("Am I [U]pdating, [B]acking up, or [R]estoring? ")
     if job.upper() == "B":
         backup()
         os.chdir(original_dir)
@@ -165,5 +172,8 @@ def main():
         restore_settings()
         launch_apps()
         final_prep()
+    elif job.upper() == "U":
+        print("Running Updates")
+        update()
         
 main()
