@@ -28,4 +28,7 @@ alias brupdate='brew update && brew upgrade && figlet refreshing && source ~/.zs
 
 # Misc 
 alias ls='ls -hal'
-alias buildbot='python3 ~/buildbot/buildbot.py'
+alias bb='python3 ~/buildbot/buildbot.py'
+
+# Added by Antigravity
+export PATH="/Users/d1084s2/.antigravity/antigravity/bin:$PATH"
