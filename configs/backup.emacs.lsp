@@ -63,7 +63,6 @@
  '(org-agenda-files
    '("/Users/d1084s2/sbemode/orgmode/defts/"
      "/Users/d1084s2/sbemode/orgmode/home-do.org"
-     "/Users/d1084s2/sbemode/orgmode/portlandtoday.org"
      "/Users/d1084s2/sbemode/orgmode/work-do.org"))
  '(package-selected-packages '(deft)))
 (setq deft-extensions '("txt" "org" "md"))
