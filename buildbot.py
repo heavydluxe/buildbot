@@ -2,12 +2,12 @@ import os, sys, time
 
 def restore_brews():
     # Brew Items - CLIs and Casks
-    brew_clis = ['bat', 'colima', 'coreutils', 'docker', 'docker-completion',
+    brew_clis = ['bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
                  'dockutil', 'emacs', 'figlet', 'gh', 'git', 'macmon', 'nmap',
                  'oh-my-posh', 'ollama', 'speedtest-cli', 'sqlite',
                  'tcpdump', 'termshark', 'tree']
     
-    brew_casks = ['1password', 'font-jetbrains-mono',
+    brew_casks = ['1password', 'claude-code', 'font-jetbrains-mono',
                   'font-jetbrains-mono-nerd-font',
                   'font-meslo-lg-nerd-font', 'obs', 'splashtop-business',
                   'spotify', 'visual-studio-code', 'windows-app']
@@ -54,8 +54,6 @@ def restore_settings():
     print('Restoring System Files from Repo')
     os.system('cp ./configs/backup.emacs.lsp ~/.emacs')
     os.system('cp ./configs/backup.zshrc ~/.zshrc')
-    os.system('cp ./configs/backup.mytheme.omp.json ~/.mytheme.omp.json')
-    os.system('cp ./configs/backup.continue.config.template.yaml ~/.continue/config.template.yaml')
     
     # Dock Cleanup; make sure to mark off space-named apps with ""s
     dock_apps = ['/Applications/"Visual Studio Code.app"',  
@@ -123,11 +121,6 @@ def backup():
     os.system("cp ~/.mytheme.omp.json ./configs/backup.mytheme.omp.json")
     time.sleep(1)
     
-    # Backup Continue YAML Config
-    print(">>> Backing up Continue's config template (~/.continue/config.template.yaml)")
-    os.system("cp ~/.continue/config.template.yaml ./configs/backup.continue.config.template.yaml")
-    time.sleep(1)
-    
     # Clean out emacs backups
     print("A little housekeeping, now...")
     print(">>> Cleaning out temp files in ~/zzzemacs-backups")
@@ -152,7 +145,6 @@ def backup():
 def update():
     os.system("brew update && brew upgrade")
     os.system("brew upgrade")
-    os.system("figlet rebrewing svcs && brew services restart --all")
     os.system("figlet done-ish")
     print("Run 'source ~/.zshrc' to refresh your shell configuration.")
     
