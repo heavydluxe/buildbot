@@ -3,8 +3,8 @@ import os, sys, time
 def restore_brews():
     # Brew Items - CLIs and Casks
     brew_clis = ['bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
-                 'dockutil', 'emacs', 'figlet', 'gh', 'git', 'macmon', 'nmap',
-                 'oh-my-posh', 'ollama', 'speedtest-cli', 'sqlite',
+                 'dockutil', 'emacs', 'figlet', 'gemini-cli', 'gh', 'git', 'macmon', 
+                 'nmap', 'oh-my-posh', 'ollama', 'speedtest-cli', 'sqlite',
                  'tcpdump', 'termshark', 'tree']
     
     brew_casks = ['1password', 'claude-code', 'font-jetbrains-mono',
@@ -144,7 +144,6 @@ def backup():
 
 def update():
     os.system("brew update && brew upgrade")
-    os.system("brew upgrade")
     os.system("figlet done-ish")
     print("Run 'source ~/.zshrc' to refresh your shell configuration.")
     

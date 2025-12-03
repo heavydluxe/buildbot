@@ -1,3 +1,4 @@
+# cd ~/sbemode
 # If you come from bash you might have to change your $PATH.
 # Path to your Oh My Zsh installation.
 plugins=(git brew sudo zsh-autosuggestions zsh-syntax-highlighting)
@@ -6,7 +7,6 @@ source $ZSH/oh-my-zsh.sh
 
 # Location of oh-my-posh config file
 eval "$(oh-my-posh init zsh --config ~/.mytheme.omp.json)"
-
 zstyle ':omz:update' mode auto        # update automatically without asking
 zstyle ':omz:update' frequency 14
 
@@ -29,6 +29,6 @@ alias brupdate='brew update && brew upgrade && figlet refreshing && source ~/.zs
 # Misc 
 alias ls='ls -hal'
 alias bb='python3 ~/buildbot/buildbot.py'
-
+alias send_it='python3 send_it.py'
 # Added by Antigravity
 export PATH="/Users/d1084s2/.antigravity/antigravity/bin:$PATH"
