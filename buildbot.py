@@ -3,9 +3,9 @@ import os, sys, time
 def restore_brews():
     # Brew Items - CLIs and Casks
     brew_clis = ['bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
-                 'dockutil', 'emacs', 'figlet', 'gemini-cli', 'gh', 'git', 'macmon', 
-                 'nmap', 'oh-my-posh', 'ollama', 'speedtest-cli', 'sqlite',
-                 'tcpdump', 'termshark', 'tree']
+                 'dockutil', 'emacs', 'figlet', 'gemini-cli', 'gh', 'git', 'install-nothing',
+                 'macmon', 'nmap', 'oh-my-posh', 'ollama', 'presenterm', 'speedtest-cli', 
+                 'sqlite', 'tcpdump', 'termshark', 'tree']
     
     brew_casks = ['1password', 'claude-code', 'font-jetbrains-mono',
                   'font-jetbrains-mono-nerd-font',
