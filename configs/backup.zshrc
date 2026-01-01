@@ -23,6 +23,7 @@ alias sb='cd ~/sbemode/orgmode && emacs --eval "(progn (org-agenda nil \"a\") (o
 ## AI-related aliases
 alias morning='cd ~/sbemode/@resist_entropy && claude /morning --permission-mode acceptEdits'
 alias night='cd ~/sbemode/@resist_entropy && claude /night --permission-mode acceptEdits'
+alias curlmodels="curl https://api.anthropic.com/v1/models -H 'anthropic-version: 2023-06-01' -H 'X-Api-Key: $ANTHROPIC_PERSONAL_API_KEY'"
 
 # Misc 
 alias ls='ls -hal'
