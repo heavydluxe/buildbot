@@ -20,15 +20,11 @@ ENABLE_CORRECTION="true"
 ## SBEMODE alias
 alias sb='cd ~/sbemode/orgmode && emacs --eval "(progn (org-agenda nil \"a\") (org-agenda-day-view) (delete-other-windows))"'
 
-## AI-related aliases for ollama and fabric
-alias ol='ollama'
-alias olon='brew services restart ollama'
-alias oloff='brew services stop ollama'
-alias brupdate='brew update && brew upgrade && figlet refreshing && source ~/.zshrc && brew services restart --all'
+## AI-related aliases
+alias morning='cd ~/sbemode/@resist_entropy && claude /morning --permission-mode acceptEdits'
+alias night='cd ~/sbemode/@resist_entropy && claude /night --permission-mode acceptEdits'
 
 # Misc 
 alias ls='ls -hal'
 alias bb='python3 ~/buildbot/buildbot.py'
 alias send_it='python3 send_it.py'
-# Added by Antigravity
-export PATH="/Users/d1084s2/.antigravity/antigravity/bin:$PATH"

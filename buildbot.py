@@ -4,7 +4,7 @@ def restore_brews():
     # Brew Items - CLIs and Casks
     brew_clis = ['bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
                  'dockutil', 'emacs', 'figlet', 'gemini-cli', 'gh', 'git', 'install-nothing',
-                 'macmon', 'nmap', 'oh-my-posh', 'ollama', 'presenterm', 'speedtest-cli', 
+                 'macmon', 'nmap', 'oh-my-posh', 'opencode', 'presenterm', 'speedtest-cli', 
                  'sqlite', 'tcpdump', 'termshark', 'tree']
     
     brew_casks = ['1password', 'claude-code', 'font-jetbrains-mono',
@@ -54,6 +54,7 @@ def restore_settings():
     print('Restoring System Files from Repo')
     os.system('cp ./configs/backup.emacs.lsp ~/.emacs')
     os.system('cp ./configs/backup.zshrc ~/.zshrc')
+    os.system('install -d ~/backup/backup.opencode.json ~/.config/opencode/opencode.json')
     
     # Dock Cleanup; make sure to mark off space-named apps with ""s
     dock_apps = ['/Applications/"Visual Studio Code.app"',  
@@ -119,6 +120,11 @@ def backup():
     # Backup OhMyPosh Config
     print(">>> Backing up oh-my-posh config (~/.mytheme.omp.json)")
     os.system("cp ~/.mytheme.omp.json ./configs/backup.mytheme.omp.json")
+    time.sleep(1)
+    
+    # Backup OpenCode Config
+    print(">>> Backing up OpenCode config (~/.config/opencode/opencode.json)")
+    os.system("cp ~/.config/opencode/opencode.json ./configs/backup.opencode.json")
     time.sleep(1)
     
     # Clean out emacs backups
