@@ -33,6 +33,12 @@
           "reasoning": true,
           "tool_call": true
         },
+        "GEISEL-IT.anthropic.claude-opus-4-5-20251101": {
+          "name": "GEISEL-IT Opus 4.5",
+          "attachment": true,
+          "reasoning": true,
+          "tool_call": true
+        },
         "vertex_ai.gemini-2.5-flash": {
           "name": "gemini-2.5-flash",
           "attachment": true,
