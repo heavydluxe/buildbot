@@ -3,7 +3,7 @@ import os, sys, time
 def restore_brews():
     # Brew Items - CLIs and Casks
     brew_clis = ['bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
-                 'dockutil', 'emacs', 'figlet', 'gemini-cli', 'gh', 'git', 'install-nothing',
+                 'dockutil', 'emacs', 'figlet', 'gh', 'git', 'install-nothing',
                  'macmon', 'nmap', 'oh-my-posh', 'opencode', 'presenterm', 'speedtest-cli', 
                  'sqlite', 'tcpdump', 'termshark', 'tree']
     
@@ -52,9 +52,9 @@ def restore_settings():
     
     # System Files Restore
     print('Restoring System Files from Repo')
-    os.system('cp ./configs/backup.emacs.lsp ~/.emacs')
+    os.system('unzip -o ~/Desktop/emacs.backup.zip -d ~/')
     os.system('cp ./configs/backup.zshrc ~/.zshrc')
-    os.system('install -d ~/backup/backup.opencode.json ~/.config/opencode/opencode.json')
+    os.system('cp ./configs/ghostty.config "$HOME/Library/Application Support/com.mitchellh.ghostty/config"')
     
     # Dock Cleanup; make sure to mark off space-named apps with ""s
     dock_apps = ['/Applications/"Visual Studio Code.app"',  
@@ -72,7 +72,7 @@ def restore_settings():
     print("Setting up the Dock")
     for apps in dock_apps:
         os.system(f'dockutil --add {apps}')
-    os.system("dockutil --add /dockutil --add '~/Downloads' --view fan --display folder")
+    os.system("dockutil --add '~/Downloads' --view fan --display folder")
 
 def launch_apps():
     # Start the GUI apps and get them configured...
@@ -85,7 +85,6 @@ def launch_apps():
     
     # Launch brew services
     os.system('brew services start colima')
-    os.system('brew services start ollama')
 
 def final_prep():
     # setup sbemode folder
@@ -96,7 +95,6 @@ def final_prep():
     print('----> run "gh auth" to get github cli setup')
     print('----> Clone orgmode, ai_materials, and other code repos')
     print('Populate ~/.secrets file with API Keys as needed...')
-    os.system('cd ~/sbemode')
     os.system('figlet DONE')
     
 def backup():
@@ -107,24 +105,19 @@ def backup():
     
     ### MIGHT BE NICE TO TURN ALL THIS INTO A VAR / CLASS AND LOOP instead
     
-    # Backup Emacs Config
-    print(">>> Backing up emacs config (~/.emacs)")
-    os.system("cp ~/.emacs ./configs/backup.emacs.lsp")
-    time.sleep(1)
-    
     # Backup Zshrc Config
     print(">>> Backing up zsh config (~/.zshrc)")
     os.system("cp ~/.zshrc ./configs/backup.zshrc")
     time.sleep(1)
-    
-    # Backup OhMyPosh Config
-    print(">>> Backing up oh-my-posh config (~/.mytheme.omp.json)")
-    os.system("cp ~/.mytheme.omp.json ./configs/backup.mytheme.omp.json")
+
+    # Backup emacs information
+    print(">>> Backing up emacs config (~/.emacs.d)")
+    os.system("zip -r ./configs/emacs.backup.zip ~/.emacs.d/")
     time.sleep(1)
-    
-    # Backup OpenCode Config
-    print(">>> Backing up OpenCode config (~/.config/opencode/opencode.json)")
-    os.system("cp ~/.config/opencode/opencode.json ./configs/backup.opencode.json")
+
+    # Backup GhosTTY configuration
+    print(">>> Backing up GhosTTY config")
+    os.system('cp "$HOME/Library/Application Support/com.mitchellh.ghostty/config" ./configs/ghostty.config')
     time.sleep(1)
     
     # Clean out emacs backups
