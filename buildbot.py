@@ -7,9 +7,9 @@ def restore_brews():
                  'macmon', 'nmap', 'oh-my-posh', 'opencode', 'presenterm', 'speedtest-cli', 
                  'sqlite', 'tcpdump', 'termshark', 'tree']
     
-    brew_casks = ['1password', 'claude-code', 'font-jetbrains-mono',
-                  'font-jetbrains-mono-nerd-font',
-                  'font-meslo-lg-nerd-font', 'obs', 'splashtop-business',
+    brew_casks = ['1password', 'claude', 'claude-code', 'font-jetbrains-mono',
+                  'font-jetbrains-mono-nerd-font', 'font-meslo-lg-nerd-font', 
+                  'ghostty', 'obs', 'splashtop-business',
                   'spotify', 'visual-studio-code', 'windows-app']
     
     # Run the restoration loops.    

@@ -31,7 +31,11 @@ alias curlclaude="curl https://api.anthropic.com/v1/models -H 'anthropic-version
 # Misc 
 alias ls='ls -hal'
 alias bb='python3 ~/buildbot/buildbot.py'
-alias tn='tmux new-session -s'
-alias ta='tmux attach -t'
-alias tl='tmux ls'
+alias bq='llama-server -hf unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q8_K_XL'
 
+
+# Dartmouth Claude Config
+claude-dart() {
+  source ~/.secrets
+  CLAUDE_CONFIG_DIR="${HOME}/.claude-dart" claude "$@"
+}
