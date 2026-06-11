@@ -10,9 +10,6 @@ export ZSH="$HOME/.oh-my-zsh"
 source $ZSH/oh-my-zsh.sh
 export PATH="$HOME/.local/bin:$PATH"
 
-# Llama.cpp path
-export LLAMA_CACHE=~/.llamacpp/cache
-
 # Location of oh-my-posh config file
 eval "$(oh-my-posh init zsh --config ~/.mytheme.omp.json)"
 zstyle ':omz:update' mode auto        # update automatically without asking
@@ -31,8 +28,6 @@ alias curlclaude="curl https://api.anthropic.com/v1/models -H 'anthropic-version
 # Misc 
 alias ls='ls -hal'
 alias bb='python3 ~/buildbot/buildbot.py'
-alias bq='llama-server -hf unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q8_K_XL'
-
 
 # Dartmouth Claude Config
 claude-dart() {
