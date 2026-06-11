@@ -1,169 +1,258 @@
-import os, sys, time
+import osA
+import sys
+import time
+import subprocess
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def run(cmd):
+    result = subprocess.run(cmd, shell=True)
+    if result.returncode != 0:
+        print(f"[!] Command failed (exit {result.returncode}): {cmd}")
+    return result.returncode == 0
+
+def pause(seconds=1):
+    time.sleep(seconds)
+
+def header(text):
+    print(f"\n{'='*50}")
+    print(f"  {text}")
+    print(f"{'='*50}")
+
+# ---------------------------------------------------------------------------
+# Config: edit these lists to control what gets installed / backed up
+# ---------------------------------------------------------------------------
+
+BREW_CLIS = [
+    'bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
+    'dockutil', 'emacs', 'figlet', 'gh', 'git', 'install-nothing', 'jq',
+    'nmap', 'oh-my-posh', 'ollama', 'opencode', 'ripgrep', 'speedtest-cli',
+    'sqlite', 'termshark', 'tree',
+]
+
+BREW_CASKS = [
+    '1password', 'claude', 'claude-code', 'ghostty', 'obs', 'splashtop-business',
+    'spotify', 'visual-studio-code', 'windows-app', 'font-jetbrains-mono-nerd-font',
+    'font-departure-mono-nerd-font',
+]
+
+# Each entry: (live path on machine, path inside this repo)
+CONFIGS = [
+    ("~/.zshrc",                                                       "./configs/backup.zshrc"),
+    ("~/.mytheme.omp.json",                                            "./configs/mytheme.omp.json"),
+    ("$HOME/Library/Application Support/com.mitchellh.ghostty/config", "./configs/ghostty.config"),
+]
+
+# Emacs is a directory — backed up as a zip
+EMACS_SRC = "~/.emacs.d/"
+EMACS_ZIP = "./configs/emacs.backup.zip"
+
+# ---------------------------------------------------------------------------
+# Restore functions
+# ---------------------------------------------------------------------------
+
+def bootstrap_brew():
+    header("Checking for Homebrew")
+    if run("command -v brew > /dev/null 2>&1"):
+        print("Homebrew already installed.")
+    else:
+        print("Homebrew not found — installing now.")
+        print("You may be prompted for your sudo password.")
+        run('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"')
+        # Apple Silicon puts brew at /opt/homebrew; make it available in this session
+        run('eval "$(/opt/homebrew/bin/brew shellenv)"')
+    pause()
 
 def restore_brews():
-    # Brew Items - CLIs and Casks
-    brew_clis = ['bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
-                 'dockutil', 'emacs', 'figlet', 'gh', 'git', 'install-nothing',
-                 'macmon', 'nmap', 'oh-my-posh', 'opencode', 'presenterm', 'speedtest-cli', 
-                 'sqlite', 'tcpdump', 'termshark', 'tree']
-    
-    brew_casks = ['1password', 'claude', 'claude-code', 'font-jetbrains-mono',
-                  'font-jetbrains-mono-nerd-font', 'font-meslo-lg-nerd-font', 
-                  'ghostty', 'obs', 'splashtop-business',
-                  'spotify', 'visual-studio-code', 'windows-app']
-    
-    # Run the restoration loops.    
-    print("Restoring Homebrew Files")
-    print("Installing Homebrew CLI files")
-    for cli in brew_clis:
-        print(f"Installing {cli} via (home)brew")
-        os.system(f'brew install {cli}')
-        time.sleep(1)
-    print("Installing Homebrew Casks")
-    for cask in brew_casks:
-        print(f"Installing {cask} via (home)brew")
-        os.system(f'brew install {cask}')
-        time.sleep(1)
+    header("Restoring Homebrew Packages")
+
+    print("Installing CLI tools...")
+    for pkg in BREW_CLIS:
+        print(f"  -> {pkg}")
+        run(f"brew install {pkg}")
+        pause()
+
+    print("Installing Casks...")
+    for cask in BREW_CASKS:
+        print(f"  -> {cask}")
+        run(f"brew install --cask {cask}")
+        pause()
 
 def sys_prep():
-     # Set Sysname
-    hostname = input("Enter NEW Hostname for this device: ")
-    print("You will need to enter your sudo password to proceed")
-    os.system(f'sudo scutil --set HostName "{hostname.lower()}"')
-    os.system(f'sudo scutil --set ComputerName "{hostname.lower()}"')
-    os.system(f'sudo scutil --set LocalHostName "{hostname.lower()}"')
-    print(f'This computer has been renamed {hostname.lower()}')
-    
-    # Configure git settings
-    print("Configuring git...")
-    os.system('git config --global user.name "Brian Dellinger"')
-    os.system('git config --global user.email "bdellinger@gmail.com"')
-    os.system('git config --global init.defaultBranch main')
-    os.system('git config --global alias.graph "log --graph"')
-    
-    # OhMyZsh & related secret sauce
-    os.system('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
-    os.system('mkdir ~/.cache')
-    os.system('git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting')
-    os.system('git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions')
-    os.system('git clone https://github.com/jrblevin/deft ~/.deft')
+    header("System Preparation")
+
+    hostname = input("Enter new hostname for this device: ").strip().lower()
+    print("You will need your sudo password for the hostname change.")
+    run(f'sudo scutil --set HostName "{hostname}"')
+    run(f'sudo scutil --set ComputerName "{hostname}"')
+    run(f'sudo scutil --set LocalHostName "{hostname}"')
+    print(f"Hostname set to: {hostname}")
+    pause()
+
+    print("Configuring git globals...")
+    run('git config --global user.name "Brian Dellinger"')
+    run('git config --global user.email "bdellinger@gmail.com"')
+    run('git config --global init.defaultBranch main')
+    run('git config --global alias.graph "log --graph"')
+    pause()
+
+    print("Installing Oh My Zsh...")
+    run('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
+    pause()
+
+    print("Installing Zsh plugins...")
+    run('mkdir -p ~/.cache')
+    run('git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting')
+    run('git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions')
+    pause()
+
+    print("Cloning Deft...")
+    run('git clone https://github.com/jrblevin/deft ~/.deft')
+    pause()
 
 def restore_settings():
-    
-    # System Files Restore
-    print('Restoring System Files from Repo')
-    os.system('unzip -o ~/Desktop/emacs.backup.zip -d ~/')
-    os.system('cp ./configs/backup.zshrc ~/.zshrc')
-    os.system('cp ./configs/ghostty.config "$HOME/Library/Application Support/com.mitchellh.ghostty/config"')
-    
-    # Dock Cleanup; make sure to mark off space-named apps with ""s
-    dock_apps = ['/Applications/"Visual Studio Code.app"',  
-                 '/Applications/Firefox.app',
-                 '/Applications/"Google Chrome".app',
-                 '/System/Applications/"System Settings.app"',
-                 '/Applications/1Password.app',
-                 '/Applications/"Windows App".app',
-                 '/Applications/zoom.us.app',
-                 '/Applications/GlobalProtect.app',
-                 '/Applications/"Splashtop Business.app"',
-                 '/Applications/Spotify.app']
-    print('Installing dockutil and clearing the decks... er, docks.')
-    os.system('dockutil --remove all')
-    print("Setting up the Dock")
-    for apps in dock_apps:
-        os.system(f'dockutil --add {apps}')
-    os.system("dockutil --add '~/Downloads' --view fan --display folder")
+    header("Restoring Config Files")
+
+    for live_path, repo_path in CONFIGS:
+        expanded_live = os.path.expandvars(os.path.expanduser(live_path))
+        print(f"  Restoring {repo_path} -> {expanded_live}")
+        os.makedirs(os.path.dirname(expanded_live), exist_ok=True)
+        run(f'cp "{repo_path}" "{expanded_live}"')
+        pause()
+
+    print(f"  Restoring emacs config ({EMACS_ZIP} -> ~/)")
+    run(f'unzip -o {EMACS_ZIP} -d ~/')
+    pause()
+
+    header("Setting Up Dock")
+    dock_apps = [
+        '/Applications/"Visual Studio Code.app"',
+        '/Applications/Firefox.app',
+        '/Applications/"Google Chrome.app"',
+        '/System/Applications/"System Settings.app"',
+        '/Applications/1Password.app',
+        '/Applications/"Windows App.app"',
+        '/Applications/zoom.us.app',
+        '/Applications/GlobalProtect.app',
+        '/Applications/"Splashtop Business.app"',
+        '/Applications/Spotify.app',
+    ]
+    run('dockutil --remove all')
+    pause()
+    for app in dock_apps:
+        print(f"  Adding {app}")
+        run(f'dockutil --add {app}')
+    run("dockutil --add '~/Downloads' --view fan --display folder")
+    pause()
 
 def launch_apps():
-    # Start the GUI apps and get them configured...
-    print('Opening key apps for configuration.')
-    os.system('open -n /Applications/"Google Chrome.app"')
-    os.system('open -n /Applications/1Password.app')
-    os.system('open -n /Applications/Firefox.app')
-    os.system('open -n /Applications/"Visual Studio Code.app"')
-    os.system('open -n /Applications/"Splashtop Business.app"')
-    
-    # Launch brew services
-    os.system('brew services start colima')
+    header("Launching Apps for Initial Setup")
+    apps = [
+        '/Applications/"Google Chrome.app"',
+        '/Applications/1Password.app',
+        '/Applications/Firefox.app',
+        '/Applications/"Visual Studio Code.app"',
+        '/Applications/"Splashtop Business.app"',
+    ]
+    for app in apps:
+        print(f"  Opening {app}")
+        run(f'open -n {app}')
+        pause()
 
 def final_prep():
-    # setup sbemode folder
-    os.system('mkdir ~/sbemode')
-    os.system('mkdir ~/sbemode/code')
-    os.system('touch ~/.secrets')
-    print('DO NOT FORGET to do the following things before you are done!')
-    print('----> run "gh auth" to get github cli setup')
-    print('----> Clone orgmode, ai_materials, and other code repos')
-    print('Populate ~/.secrets file with API Keys as needed...')
-    os.system('figlet DONE')
-    
+    header("Final Setup")
+    os.makedirs(os.path.expanduser("~/sbemode/code"), exist_ok=True)
+    open(os.path.expanduser("~/.secrets"), "a").close()
+    print("Folder structure created.")
+    pause()
+    print("\nDon't forget to do the following before you're done:")
+    print("  -> Run 'gh auth login' to authenticate the GitHub CLI")
+    print("  -> Clone orgmode, ai_materials, and other code repos")
+    print("  -> Populate ~/.secrets with API keys as needed")
+    print("  -> run 'ollama pull' to get models, and ollama launch pi")
+    run('figlet DONE')
+
+# ---------------------------------------------------------------------------
+# Backup
+# ---------------------------------------------------------------------------
+
 def backup():
-    # Implement the backup logic here
-    os.system("figlet BackItUp")
-    print("Backing up critical files")
-    time.sleep(1)
-    
-    ### MIGHT BE NICE TO TURN ALL THIS INTO A VAR / CLASS AND LOOP instead
-    
-    # Backup Zshrc Config
-    print(">>> Backing up zsh config (~/.zshrc)")
-    os.system("cp ~/.zshrc ./configs/backup.zshrc")
-    time.sleep(1)
+    header("Backing Up Critical Files")
+    pause()
 
-    # Backup emacs information
-    print(">>> Backing up emacs config (~/.emacs.d)")
-    os.system("zip -r ./configs/emacs.backup.zip ~/.emacs.d/")
-    time.sleep(1)
+    for live_path, repo_path in CONFIGS:
+        expanded_live = os.path.expandvars(os.path.expanduser(live_path))
+        print(f"  Backing up {live_path}")
+        run(f'cp "{expanded_live}" "{repo_path}"')
+        pause()
 
-    # Backup GhosTTY configuration
-    print(">>> Backing up GhosTTY config")
-    os.system('cp "$HOME/Library/Application Support/com.mitchellh.ghostty/config" ./configs/ghostty.config')
-    time.sleep(1)
-    
-    # Clean out emacs backups
-    print("A little housekeeping, now...")
-    print(">>> Cleaning out temp files in ~/zzzemacs-backups")
-    os.system("rm ~/zzzemacs-backups/*")
-    time.sleep(1)
-    
-    # All Done...
-    os.system("figlet COMPLETE")
-    print("All critical files have been backed up.")
-    # get files into git(hub)
-    commit_now = input("Should I push these changes to git(hub) for you now? (Y/N): ")
-    if commit_now.upper() == "Y":
+    print(f"  Backing up emacs config -> {EMACS_ZIP}")
+    run(f'zip -r {EMACS_ZIP} {EMACS_SRC}')
+    pause()
+
+    print("  Cleaning up old emacs temp files...")
+    run('rm -f ~/zzzemacs-backups/*')
+    pause()
+
+    run('figlet COMPLETE')
+    print("All critical files backed up.")
+    pause()
+
+    commit_now = input("Push these changes to GitHub now? (Y/N): ").strip().upper()
+    if commit_now == "Y":
         timestamp = time.strftime("%Y-%m-%d @ %H:%M:%S")
-        os.system("git add .")
-        os.system(f'git commit -m "Buildbot copy of critical files {timestamp}"')
-        os.system("git push -u origin main")
-        os.system("figlet GIT-ED")    
+        run("git add .")
+        run(f'git commit -m "Buildbot copy of critical files {timestamp}"')
+        run("git push -u origin main")
+        run('figlet GIT-ED')
     else:
-        print("DO NOT FORGET TO PUSH LATER, FOOL!")
-        os.system("figlet DONE")
+        print("Don't forget to push later!")
+        run('figlet DONE')
+
+# ---------------------------------------------------------------------------
+# Update
+# ---------------------------------------------------------------------------
 
 def update():
-    os.system("brew update && brew upgrade")
-    os.system("figlet done-ish")
-    print("Run 'source ~/.zshrc' to refresh your shell configuration.")
-    
+    header("Running Updates")
+    run("brew update && brew upgrade")
+    pause()
+    run('figlet done-ish')
+    print("Run 'source ~/.zshrc' to reload your shell config.")
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
+
 def main():
-    # Set variables
     userid = os.getlogin()
     original_dir = os.getcwd()
     os.chdir(f'/Users/{userid}/buildbot')
-    job = input ("Am I [U]pdating, [B]acking up, or [R]estoring? ")
-    if job.upper() == "B":
+
+    run('figlet buildbot')
+    print("What should I do?")
+    print("  [U] Update (brew update/upgrade)")
+    print("  [B] Backup critical files")
+    print("  [R] Restore (full machine setup)")
+    job = input("\nChoice: ").strip().upper()
+
+    if job == "B":
         backup()
-        os.chdir(original_dir)
-    elif job.upper() == "R":
-        print("Beginning Restoration Work")
+    elif job == "R":
+        print("\nStarting full restoration...")
+        bootstrap_brew()
         sys_prep()
         restore_brews()
         restore_settings()
         launch_apps()
         final_prep()
-    elif job.upper() == "U":
-        print("Running Updates")
+    elif job == "U":
         update()
-        
+    else:
+        print("Unknown option. Use U, B, or R.")
+
+    os.chdir(original_dir)
+
 main()
