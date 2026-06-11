@@ -28,8 +28,8 @@ def header(text):
 BREW_CLIS = [
     'bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
     'dockutil', 'emacs', 'fzf', 'figlet', 'gh', 'git', 'install-nothing', 'jq',
-    'nmap', 'oh-my-posh', 'ollama', 'opencode', 'ripgrep', 'speedtest-cli',
-    'sqlite', 'termshark', 'tree',
+    'nmap', 'oh-my-posh', 'ollama', 'ripgrep', 'speedtest-cli', 'sqlite',
+    'termshark', 'tree',
 ]
 
 BREW_CASKS = [
@@ -68,6 +68,7 @@ def bootstrap_brew():
 
 def restore_brews():
     header("Restoring Homebrew Packages")
+    os.environ['NONINTERACTIVE'] = '1'
 
     print("Installing CLI tools...")
     for pkg in BREW_CLIS:
@@ -129,22 +130,23 @@ def restore_settings():
 
     header("Setting Up Dock")
     dock_apps = [
-        '/Applications/"Visual Studio Code.app"',
+        '/Applications/Ghostty.app',
         '/Applications/Firefox.app',
-        '/Applications/"Google Chrome.app"',
-        '/System/Applications/"System Settings.app"',
-        '/Applications/1Password.app',
-        '/Applications/"Windows App.app"',
+        '/Applications/Google Chrome.app',
+        '/Applications/Claude.app',
+        '/Applications/Visual Studio Code.app',
         '/Applications/zoom.us.app',
+        '/Applications/Windows App.app',
+        '/Applications/Splashtop Business.app',
         '/Applications/GlobalProtect.app',
-        '/Applications/"Splashtop Business.app"',
         '/Applications/Spotify.app',
+        '/System/Applications/System Settings.app',
     ]
     run('dockutil --remove all')
     pause()
     for app in dock_apps:
         print(f"  Adding {app}")
-        run(f'dockutil --add {app}')
+        run(f'dockutil --add "{app}"')
     run("dockutil --add '~/Downloads' --view fan --display folder")
     pause()
 
