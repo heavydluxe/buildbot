@@ -62,8 +62,13 @@ def bootstrap_brew():
         print("Homebrew not found — installing now.")
         print("You may be prompted for your sudo password.")
         run('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"')
-        # Apple Silicon puts brew at /opt/homebrew; make it available in this session
-        run('eval "$(/opt/homebrew/bin/brew shellenv)"')
+
+    # Apple Silicon installs brew to /opt/homebrew — inject it into this process's PATH
+    # so all subsequent subprocess calls can find it without a shell reload.
+    brew_bin = '/opt/homebrew/bin'
+    if brew_bin not in os.environ.get('PATH', ''):
+        os.environ['PATH'] = brew_bin + ':' + os.environ.get('PATH', '')
+        print(f"Added {brew_bin} to PATH.")
     pause()
 
 def restore_brews():
