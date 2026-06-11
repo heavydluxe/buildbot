@@ -43,6 +43,7 @@ CONFIGS = [
     ("~/.zshrc",                                                       "./configs/backup.zshrc"),
     ("~/.mytheme.omp.json",                                            "./configs/mytheme.omp.json"),
     ("$HOME/Library/Application Support/com.mitchellh.ghostty/config", "./configs/ghostty.config"),
+    ("$HOME/.claude-dart/settings.json",                               "./configs/claude-dart.settings.json"),
 ]
 
 # Emacs is a directory — backed up as a zip
@@ -164,7 +165,10 @@ def launch_apps():
 def final_prep():
     header("Final Setup")
     os.makedirs(os.path.expanduser("~/sbemode/code"), exist_ok=True)
-    open(os.path.expanduser("~/.secrets"), "a").close()
+    _secrets_path = os.path.expanduser("~/.secrets")
+    with open(_secrets_path, "w") as f:
+        f.write("# API Keys and Tokens\n")
+        f.write('export DARTMOUTH_CHAT_API_KEY=""\n')
     print("Folder structure created.")
     pause()
     print("\nDon't forget to do the following before you're done:")
