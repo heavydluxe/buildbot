@@ -100,7 +100,7 @@ def sys_prep():
     pause()
 
     print("Installing Oh My Zsh...")
-    run('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"')
+    run('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended')
     pause()
 
     print("Installing Zsh plugins...")
