@@ -144,15 +144,18 @@ def restore_settings():
         '/Applications/Windows App.app',
         '/Applications/Splashtop Business.app',
         '/Applications/GlobalProtect.app',
+        '/Applications/1Password.app',
         '/Applications/Spotify.app',
         '/System/Applications/System Settings.app',
     ]
-    run('dockutil --remove all')
+    run('defaults write com.apple.dock show-recents -bool false')
+    run('dockutil --remove all --no-restart')
     pause()
     for app in dock_apps:
         print(f"  Adding {app}")
-        run(f'dockutil --add "{app}"')
-    run("dockutil --add '~/Downloads' --view fan --display folder")
+        run(f'dockutil --add "{app}" --no-restart')
+    run("dockutil --add '~/Downloads' --view fan --display folder --no-restart")
+    run('killall Dock')
     pause()
 
 def launch_apps():
