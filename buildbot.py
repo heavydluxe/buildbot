@@ -73,19 +73,12 @@ def bootstrap_brew():
 
 def restore_brews():
     header("Restoring Homebrew Packages")
-    os.environ['NONINTERACTIVE'] = '1'
 
     print("Installing CLI tools...")
-    for pkg in BREW_CLIS:
-        print(f"  -> {pkg}")
-        run(f"brew install {pkg}")
-        pause()
+    run("brew install " + " ".join(BREW_CLIS))
 
     print("Installing Casks...")
-    for cask in BREW_CASKS:
-        print(f"  -> {cask}")
-        run(f"brew install --cask {cask}")
-        pause()
+    run("brew install --cask " + " ".join(BREW_CASKS))
 
 def sys_prep():
     header("System Preparation")
@@ -241,6 +234,8 @@ def update():
 # ---------------------------------------------------------------------------
 
 def main():
+    os.environ['NONINTERACTIVE'] = '1'
+    os.environ['HOMEBREW_NO_INTERACTIVE'] = '1'
     userid = os.getlogin()
     original_dir = os.getcwd()
     os.chdir(f'/Users/{userid}/buildbot')
