@@ -178,7 +178,7 @@ def final_prep():
     print("  -> Run 'gh auth login' to authenticate the GitHub CLI")
     print("  -> Clone orgmode, ai_materials, and other code repos")
     print("  -> Populate ~/.secrets with API keys as needed")
-    print("  -> run 'ollama pull' to get models, and ollama launch pi")
+    print("  -> 'ollama pull qwen3.6:27b-mlx && ollama pull qwen3.6:35b-a3b-mxfp8' then 'ollama launch pi")
     run('figlet DONE')
 
 # ---------------------------------------------------------------------------
