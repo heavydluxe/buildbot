@@ -28,8 +28,8 @@ def header(text):
 BREW_CLIS = [
     'bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
     'dockutil', 'emacs', 'fzf', 'figlet', 'gh', 'git', 'install-nothing', 'jq',
-    'nmap', 'oh-my-posh', 'ollama', 'ripgrep', 'speedtest-cli', 'sqlite',
-    'termshark', 'tree',
+    'nmap', 'oh-my-posh', 'ollama', 'pi-coding-agent', 'ripgrep', 'speedtest-cli',
+    'sqlite', 'termshark', 'tree',
 ]
 
 BREW_CASKS = [
