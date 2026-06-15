@@ -28,6 +28,7 @@ alias curlclaude="curl https://api.anthropic.com/v1/models -H 'anthropic-version
 # Misc 
 alias ls='ls -hal'
 alias bb='python3 ~/buildbot/buildbot.py'
+alias ol='ollama'
 
 # Dartmouth Claude Config
 claude-dart() {
