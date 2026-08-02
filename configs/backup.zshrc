@@ -22,6 +22,9 @@ ENABLE_CORRECTION="true"
 ## Emacs Orgmode Alias
 alias sb='cd ~/sbemode/@embrace_entropy && emacs --eval "(progn (org-agenda nil \"a\") (org-agenda-day-view) (delete-other-windows))"'
 
+## Emacs Coach (Claude Code skill; uses default ~/.claude config dir)
+alias coach='claude "/emacs-coach"'
+
 ## AI-related aliases
 alias curlclaude="curl https://api.anthropic.com/v1/models -H 'anthropic-version: 2023-06-01' -H 'X-Api-Key: $ANTHROPIC_PERSONAL_API_KEY'"
 
