@@ -46,9 +46,12 @@ CONFIGS = [
     ("$HOME/.claude-dart/settings.json",                               "./configs/claude-dart.settings.json"),
 ]
 
-# Emacs is a directory — backed up as a zip
-EMACS_SRC = "~/.emacs.d/"
-EMACS_ZIP = "./configs/emacs.backup.zip"
+# Emacs is a directory — backed up as a zip of ~/.emacs.d.
+# EMACS_HOME_REL is the path RELATIVE to $HOME. Zipping it from within $HOME
+# stores entries as ".emacs.d/..." (not "/Users/<you>/.emacs.d/..."), which is
+# what lets restore unpack cleanly back into ~/ on any machine.
+EMACS_HOME_REL = ".emacs.d"
+EMACS_ZIP      = "./configs/emacs.backup.zip"
 
 # ---------------------------------------------------------------------------
 # Restore functions
@@ -123,7 +126,11 @@ def restore_settings():
         pause()
 
     print(f"  Restoring emacs config ({EMACS_ZIP} -> ~/)")
-    run(f'unzip -o {EMACS_ZIP} -d ~/')
+    abs_zip = os.path.abspath(EMACS_ZIP)
+    home = os.path.expanduser("~")
+    # The zip stores paths relative to $HOME (".emacs.d/..."), so extracting
+    # with -d $HOME lands everything back in ~/.emacs.d/ exactly where it belongs.
+    run(f'unzip -o "{abs_zip}" -d "{home}"')
     pause()
 
     header("Setting Up Dock")
@@ -196,7 +203,26 @@ def backup():
         pause()
 
     print(f"  Backing up emacs config -> {EMACS_ZIP}")
-    run(f'zip -r {EMACS_ZIP} {EMACS_SRC}')
+    abs_zip = os.path.abspath(EMACS_ZIP)
+    home = os.path.expanduser("~")
+    # Start from a clean archive: `zip -r` MERGES into an existing zip, which
+    # would keep files you've since deleted from ~/.emacs.d. Removing it first
+    # makes each backup a faithful snapshot.
+    run(f'rm -f "{abs_zip}"')
+    # Zip from within $HOME so entries are stored relative to home (".emacs.d/...").
+    # Exclude machine-specific / regenerated cruft so restores stay small and safe:
+    #   eln-cache     - native-compiled elisp, tied to this CPU + Emacs version
+    #   elpa          - installed packages; init.el reinstalls them on first launch
+    #   auto-save-list- transient editor state
+    #   ido.last / *~ - transient state and backup files
+    run(
+        f'cd "{home}" && zip -r "{abs_zip}" "{EMACS_HOME_REL}" '
+        f"-x '{EMACS_HOME_REL}/eln-cache/*' "
+        f"-x '{EMACS_HOME_REL}/elpa/*' "
+        f"-x '{EMACS_HOME_REL}/auto-save-list/*' "
+        f"-x '{EMACS_HOME_REL}/ido.last' "
+        f"-x '*~'"
+    )
     pause()
 
     print("  Cleaning up old emacs temp files...")
@@ -234,8 +260,13 @@ def update():
 # ---------------------------------------------------------------------------
 
 def main():
+    # Homebrew 4.4+ ships a "default ask mode": `brew install`/`brew upgrade`
+    # prompt "Proceed? [Y/n]" before doing anything. HOMEBREW_NO_ASK disables it
+    # so restores/updates sail through unattended. (HOMEBREW_NO_INTERACTIVE, which
+    # used to live here, is not a real Homebrew variable — it never did anything.)
+    # NONINTERACTIVE keeps the Homebrew installer and other flows from prompting.
     os.environ['NONINTERACTIVE'] = '1'
-    os.environ['HOMEBREW_NO_INTERACTIVE'] = '1'
+    os.environ['HOMEBREW_NO_ASK'] = '1'
     userid = os.getlogin()
     original_dir = os.getcwd()
     os.chdir(f'/Users/{userid}/buildbot')
