@@ -33,9 +33,9 @@ BREW_CLIS = [
 ]
 
 BREW_CASKS = [
-    '1password', 'claude', 'claude-code', 'ghostty', 'obs', 'splashtop-business',
-    'spotify', 'visual-studio-code', 'windows-app', 'font-jetbrains-mono-nerd-font',
-    'font-departure-mono-nerd-font',
+    '1password', 'claude', 'claude-code', 'emacs-app', 'ghostty', 'obs',
+    'splashtop-business', 'spotify', 'visual-studio-code', 'windows-app',
+    'font-jetbrains-mono-nerd-font', 'font-departure-mono-nerd-font',
 ]
 
 # Each entry: (live path on machine, path inside this repo)
@@ -52,6 +52,27 @@ CONFIGS = [
 # what lets restore unpack cleanly back into ~/ on any machine.
 EMACS_HOME_REL = ".emacs.d"
 EMACS_ZIP      = "./configs/emacs.backup.zip"
+
+# Dock layout, restored via dockutil. Apps are pinned left-to-right in this order.
+DOCK_APPS = [
+    '/Applications/Emacs.app',
+    '/Applications/Firefox.app',
+    '/Applications/Google Chrome.app',
+    '/Applications/Claude.app',
+    '/Applications/zoom.us.app',
+    '/Applications/Visual Studio Code.app',
+    '/Applications/Windows App.app',
+    '/Applications/GlobalProtect.app',
+    '/Applications/1Password.app',
+    '/Applications/Splashtop Business.app',
+    '/System/Applications/System Settings.app',
+    '/Applications/Spotify.app',
+]
+
+# Folders pinned to the Dock's right side: (path, extra dockutil options).
+DOCK_FOLDERS = [
+    ("~/Downloads", "--view fan --display folder"),
+]
 
 # ---------------------------------------------------------------------------
 # Restore functions
@@ -133,28 +154,23 @@ def restore_settings():
     run(f'unzip -o "{abs_zip}" -d "{home}"')
     pause()
 
+def setup_dock():
     header("Setting Up Dock")
-    dock_apps = [
-        '/Applications/Ghostty.app',
-        '/Applications/Firefox.app',
-        '/Applications/Google Chrome.app',
-        '/Applications/Claude.app',
-        '/Applications/Visual Studio Code.app',
-        '/Applications/zoom.us.app',
-        '/Applications/Windows App.app',
-        '/Applications/Splashtop Business.app',
-        '/Applications/GlobalProtect.app',
-        '/Applications/1Password.app',
-        '/Applications/Spotify.app',
-        '/System/Applications/System Settings.app',
-    ]
+    # dockutil rewrites the Dock's plist. Make every change with --no-restart,
+    # then restart the Dock once at the end so it doesn't flicker per item.
     run('defaults write com.apple.dock show-recents -bool false')
     run('dockutil --remove all --no-restart')
     pause()
-    for app in dock_apps:
+
+    for app in DOCK_APPS:
         print(f"  Adding {app}")
         run(f'dockutil --add "{app}" --no-restart')
-    run("dockutil --add '~/Downloads' --view fan --display folder --no-restart")
+
+    for path, opts in DOCK_FOLDERS:
+        expanded = os.path.expanduser(path)  # dockutil won't expand ~ itself
+        print(f"  Adding folder {path}")
+        run(f'dockutil --add "{expanded}" {opts} --no-restart')
+
     run('killall Dock')
     pause()
 
@@ -286,6 +302,7 @@ def main():
         sys_prep()
         restore_brews()
         restore_settings()
+        setup_dock()
         launch_apps()
         final_prep()
     elif job == "U":
