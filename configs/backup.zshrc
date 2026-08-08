@@ -22,13 +22,17 @@ ENABLE_CORRECTION="true"
 ## Emacs Orgmode Alias
 alias sb='cd ~/sbemode/@embrace_entropy && emacs --eval "(progn (org-agenda nil \"a\") (org-agenda-day-view) (delete-other-windows))"'
 
-## Emacs Coach (Claude Code skill; uses default ~/.claude config dir)
-alias coach='claude --model sonnet "/emacs-coach"'
+## Claude Coach Commands (Claude Code skill; uses default ~/.claude config dir)
+alias emacscoach='claude --model haiku "/emacs-coach"'
 
 # Misc 
 alias ls='ls -hal'
 alias bb='python3 ~/buildbot/buildbot.py'
 alias ol='ollama'
+alias olon='brew services start ollama'
+alias oloff='brew services stop ollama'
+alias colon='brew services start colima'
+alias coloff='brew services stop colima'
 
 # Dartmouth Claude Config
 claude-dart() {
