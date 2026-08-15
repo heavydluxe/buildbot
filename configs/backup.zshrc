@@ -2,7 +2,6 @@
 
 # Load secrets file
 source ~/.secrets
-cd ~/sbemode
 
 # Path to your Oh My Zsh installation.
 plugins=(git brew sudo zsh-autosuggestions zsh-syntax-highlighting)
@@ -20,7 +19,7 @@ ENABLE_CORRECTION="true"
 
 # Aliases for Frequent Commands
 ## Emacs Orgmode Alias
-alias sb='cd ~/sbemode/@embrace_entropy && emacs --eval "(progn (org-agenda nil \"a\") (org-agenda-day-view) (delete-other-windows))"'
+alias sb='cd ~/@embrace_entropy && emacs --eval "(progn (org-agenda nil \"a\") (org-agenda-day-view) (delete-other-windows))"'
 
 ## Claude Coach Commands (Claude Code skill; uses default ~/.claude config dir)
 alias emacscoach='claude --model haiku "/emacs-coach"'
