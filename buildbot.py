@@ -132,10 +132,6 @@ def sys_prep():
     run('git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions')
     pause()
 
-    print("Cloning Deft...")
-    run('git clone https://github.com/jrblevin/deft ~/.deft')
-    pause()
-
 def restore_settings():
     header("Restoring Config Files")
 
