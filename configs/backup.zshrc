@@ -18,8 +18,8 @@ zstyle ':omz:update' frequency 14
 ENABLE_CORRECTION="true"
 
 # Aliases for Frequent Commands
-## Emacs Orgmode Alias
-alias sb='cd ~/@embrace_entropy && emacs --eval "(progn (org-agenda nil \"a\") (org-agenda-day-view) (delete-other-windows))"'
+## Emacs Orgmode Alias (deprecated now that I'm loading emacs direct in app)
+## alias sb='cd ~/@embrace_entropy && emacs --eval "(progn (org-agenda nil \"a\") (org-agenda-day-view) (delete-other-windows))"'
 
 ## Claude Coach Commands (Claude Code skill; uses default ~/.claude config dir)
 alias emacscoach='claude --model haiku "/emacs-coach"'
