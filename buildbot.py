@@ -28,14 +28,15 @@ def header(text):
 BREW_CLIS = [
     'bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
     'dockutil', 'emacs', 'fzf', 'figlet', 'gh', 'git', 'install-nothing', 'jq',
-    'nmap', 'oh-my-posh', 'ollama', 'pi-coding-agent', 'ripgrep', 'speedtest-cli',
-    'sqlite', 'termshark', 'tree',
+    'lima', 'mlx', 'mlx-c', 'nmap', 'oh-my-posh', 'ollama', 'pi-coding-agent',
+    'powershell', 'python3', 'ripgrep', 'speedtest-cli', 'sqlite', 'termshark',
+    'tree',
 ]
 
 BREW_CASKS = [
-    '1password', 'claude', 'claude-code', 'emacs-app', 'ghostty', 'obs',
-    'splashtop-business', 'spotify', 'visual-studio-code', 'windows-app',
-    'font-jetbrains-mono-nerd-font', 'font-departure-mono-nerd-font',
+    '1password', 'claude', 'claude-code', 'emacs-app', 'espanso', 'firefox',
+    'font-jetbrains-mono-nerd-font', 'ghostty', 'obs', 'splashtop-business',
+    'spotify', 'visual-studio-code', 'windows-app',
 ]
 
 # Each entry: (live path on machine, path inside this repo)
