@@ -27,7 +27,7 @@ def header(text):
 
 BREW_CLIS = [
     'bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
-    'dockutil', 'emacs', 'fzf', 'figlet', 'gh', 'git', 'install-nothing', 'jq',
+    'dockutil', 'fzf', 'figlet', 'gh', 'git', 'install-nothing', 'jq',
     'lima', 'mlx', 'mlx-c', 'nmap', 'oh-my-posh', 'ollama', 'pi-coding-agent',
     'powershell', 'python3', 'ripgrep', 'speedtest-cli', 'sqlite', 'termshark',
     'tree',
