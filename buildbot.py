@@ -26,11 +26,18 @@ def header(text):
 # ---------------------------------------------------------------------------
 
 BREW_CLIS = [
-    'bat', 'btop', 'colima', 'coreutils', 'docker', 'docker-completion',
-    'dockutil', 'fzf', 'figlet', 'gh', 'git', 'install-nothing', 'jq',
-    'lima', 'mlx', 'mlx-c', 'nmap', 'oh-my-posh', 'ollama', 'pi-coding-agent',
-    'powershell', 'python3', 'ripgrep', 'speedtest-cli', 'sqlite', 'termshark',
-    'tree',
+    # Quality of life
+    'bat', 'btop', 'coreutils', 'figlet', 'gh', 'git', 'oh-my-posh', 'ripgrep',
+    'speedtest-cli', 'sqlite', 'tree',
+    
+    # Containers
+    'colima', 'docker', 'dockutil',
+
+    # AI-related
+    'ollama', 'pi-coding-agent',
+
+    # Coding
+    'powershell', 'python3',
 ]
 
 BREW_CASKS = [

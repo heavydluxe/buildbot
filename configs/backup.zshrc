@@ -32,6 +32,7 @@ alias olon='brew services start ollama'
 alias oloff='brew services stop ollama'
 alias colon='brew services start colima'
 alias coloff='brew services stop colima'
+alias cat='bat'
 
 # Dartmouth Claude Config
 claude-dart() {
