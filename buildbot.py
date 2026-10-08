@@ -85,18 +85,22 @@ EMACS_HOME_REL = ".emacs.d"
 EMACS_ZIP      = "./configs/emacs.backup.zip"
 
 # Dock layout, restored via dockutil. Apps are pinned left-to-right in this order.
+# Finder (far left) and Trash (far right) are permanent, so they aren't listed.
 DOCK_APPS = [
-    '/Applications/Emacs.app',
     '/Applications/Firefox.app',
+    '/Applications/Emacs.app',
+    '/Applications/Microsoft Outlook.app',
     '/Applications/Google Chrome.app',
+    '/Applications/Slack.app',
     '/Applications/Claude.app',
-    '/Applications/zoom.us.app',
     '/Applications/Visual Studio Code.app',
+    '/Applications/zoom.us.app',
     '/Applications/Windows App.app',
     '/Applications/GlobalProtect.app',
     '/Applications/1Password.app',
     '/Applications/Splashtop Business.app',
     '/System/Applications/System Settings.app',
+    '~/Library/Application Support/Steam/steamapps/common/Balatro/Balatro.app',
     '/Applications/Spotify.app',
 ]
 
@@ -188,7 +192,7 @@ def setup_dock():
 
     for app in DOCK_APPS:
         print(f"  Adding {app}")
-        run(f'dockutil --add "{app}" --no-restart')
+        run(f'dockutil --add "{os.path.expanduser(app)}" --no-restart')
 
     for path, opts in DOCK_FOLDERS:
         expanded = os.path.expanduser(path)  # dockutil won't expand ~ itself
@@ -241,6 +245,7 @@ def final_prep():
     print("  -> Populate ~/.secrets with API keys as needed")
     print("  -> Grant Espanso and Handy Accessibility access, and Handy Microphone")
     print("     access (System Settings > Privacy & Security)")
+    print("  -> Install Steam + Balatro (its Dock tile is a '?' until you do)")
     run('figlet DONE')
 
 # ---------------------------------------------------------------------------
