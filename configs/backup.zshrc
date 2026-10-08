@@ -33,6 +33,9 @@ alias oloff='brew services stop ollama'
 alias colon='brew services start colima'
 alias coloff='brew services stop colima'
 alias cat='bat'
+alias b5='nohup python3.14 ~/@less-heavy-dluxe/app.py > ~/Library/Logs/b5-console.log 2>&1 & sleep 1'
+alias b5stop='pkill -f "@less-heavy-dluxe/app.py" && echo "B5 console offline"'
+alias b5log='tail -f ~/Library/Logs/b5-console.log'
 
 # Dartmouth Claude Config
 claude-dart() {
