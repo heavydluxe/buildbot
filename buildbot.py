@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import time
 import subprocess
 
@@ -21,11 +22,27 @@ def header(text):
     print(f"  {text}")
     print(f"{'='*50}")
 
+def scrub_handy_keys(path):
+    # This repo is public, so blank any AI API keys Handy has saved before
+    # the backup gets committed. You'd re-enter them on a new Mac.
+    if not os.path.exists(path):
+        return
+    with open(path) as f:
+        data = json.load(f)
+    keys = data.get("settings", {}).get("post_process_api_keys", {})
+    for name in keys:
+        keys[name] = ""
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+
 # ---------------------------------------------------------------------------
 # Config: edit these lists to control what gets installed / backed up
 # ---------------------------------------------------------------------------
 
 BREW_CLIS = [
+    # Critical infrastructure. Do not remove.
+    'install-nothing',
+
     # Quality of life
     'bat', 'btop', 'coreutils', 'figlet', 'gh', 'git', 'oh-my-posh', 'ripgrep',
     'speedtest-cli', 'sqlite', 'tree',
@@ -42,7 +59,7 @@ BREW_CLIS = [
 
 BREW_CASKS = [
     '1password', 'claude', 'claude-code', 'emacs-app', 'espanso', 'firefox',
-    'font-jetbrains-mono-nerd-font', 'ghostty', 'obs', 'splashtop-business',
+    'font-jetbrains-mono-nerd-font', 'ghostty', 'handy', 'obs', 'splashtop-business',
     'spotify', 'visual-studio-code', 'windows-app',
 ]
 
@@ -52,7 +69,13 @@ CONFIGS = [
     ("~/.mytheme.omp.json",                                            "./configs/mytheme.omp.json"),
     ("$HOME/Library/Application Support/com.mitchellh.ghostty/config", "./configs/ghostty.config"),
     ("$HOME/.claude-dart/settings.json",                               "./configs/claude-dart.settings.json"),
+    ("$HOME/Library/Application Support/espanso/config/default.yml",   "./configs/espanso.default.yml"),
+    ("$HOME/Library/Application Support/espanso/match/base.yml",       "./configs/espanso.base.yml"),
+    ("$HOME/Library/Application Support/com.pais.handy/settings_store.json", "./configs/handy.settings.json"),
 ]
+
+# Handy's backup gets its API keys blanked before commit (see scrub_handy_keys).
+HANDY_BACKUP = "./configs/handy.settings.json"
 
 # Emacs is a directory — backed up as a zip of ~/.emacs.d.
 # EMACS_HOME_REL is the path RELATIVE to $HOME. Zipping it from within $HOME
@@ -130,14 +153,11 @@ def sys_prep():
     run('git config --global alias.graph "log --graph"')
     pause()
 
+    # Oh My Zsh bundles zsh-autosuggestions and zsh-syntax-highlighting
+    # (since Sep 2026), so they no longer need cloning separately.
     print("Installing Oh My Zsh...")
     run('sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended')
-    pause()
-
-    print("Installing Zsh plugins...")
     run('mkdir -p ~/.cache')
-    run('git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/plugins/zsh-syntax-highlighting')
-    run('git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.oh-my-zsh/plugins/zsh-autosuggestions')
     pause()
 
 def restore_settings():
@@ -178,6 +198,20 @@ def setup_dock():
     run('killall Dock')
     pause()
 
+def setup_startup_apps():
+    header("Starting Espanso and Handy")
+    # Register Espanso as a background service that starts at login. Use the
+    # app's own binary (not a brew symlink) so an upgrade can't break the path.
+    espanso = "/Applications/Espanso.app/Contents/MacOS/espanso"
+    run(f'"{espanso}" service register')
+    run(f'"{espanso}" start')
+    pause()
+
+    # Add Handy as a login item (skipped if it's already there), then launch it.
+    run("""osascript -e 'tell application "System Events" to if not (exists login item "Handy") then make login item at end with properties {path:"/Applications/Handy.app", hidden:false}'""")
+    run('open -a Handy')
+    pause()
+
 def launch_apps():
     header("Launching Apps for Initial Setup")
     apps = [
@@ -205,7 +239,8 @@ def final_prep():
     print("  -> Run 'gh auth login' to authenticate the GitHub CLI")
     print("  -> Clone orgmode, ai_materials, and other code repos")
     print("  -> Populate ~/.secrets with API keys as needed")
-    print("  -> 'ollama pull qwen3.6:27b-mxfp8 && ollama pull qwen3.6:35b-a3b-mxfp8' then 'ollama launch pi")
+    print("  -> Grant Espanso and Handy Accessibility access, and Handy Microphone")
+    print("     access (System Settings > Privacy & Security)")
     run('figlet DONE')
 
 # ---------------------------------------------------------------------------
@@ -221,6 +256,8 @@ def backup():
         print(f"  Backing up {live_path}")
         run(f'cp "{expanded_live}" "{repo_path}"')
         pause()
+
+    scrub_handy_keys(HANDY_BACKUP)
 
     print(f"  Backing up emacs config -> {EMACS_ZIP}")
     abs_zip = os.path.abspath(EMACS_ZIP)
@@ -269,11 +306,33 @@ def backup():
 # ---------------------------------------------------------------------------
 
 def update():
-    header("Running Updates")
-    run("brew update && brew upgrade")
+    header("Updating Homebrew Packages")
+    # --greedy also upgrades apps that normally update themselves (Ghostty,
+    # Firefox, 1Password, VS Code, ...), which plain `brew upgrade` skips.
+    run("brew update && brew upgrade --greedy")
+    run("brew cleanup")
     pause()
+
+    header("Updating Oh My Zsh")
+    # `omz update` is a shell function, so call the script behind it directly.
+    # This also updates zsh-autosuggestions and zsh-syntax-highlighting, which
+    # Oh My Zsh has bundled since Sep 2026.
+    run("zsh ~/.oh-my-zsh/tools/upgrade.sh")
+    pause()
+
     run('figlet done-ish')
     print("Run 'source ~/.zshrc' to reload your shell config.")
+
+# ---------------------------------------------------------------------------
+# macOS updates
+# ---------------------------------------------------------------------------
+
+def macos_updates():
+    header("Checking for macOS Updates")
+    # List only. Installing may need a restart, so that's left to you.
+    run("softwareupdate --list")
+    print("\nTo install: System Settings > General > Software Update,")
+    print("or run 'sudo softwareupdate --install --all'.")
 
 # ---------------------------------------------------------------------------
 # Main
@@ -293,7 +352,8 @@ def main():
 
     run('figlet buildbot')
     print("What should I do?")
-    print("  [U] Update (brew update/upgrade)")
+    print("  [U] Update (Homebrew + Oh My Zsh)")
+    print("  [M] Check for macOS updates")
     print("  [B] Backup critical files")
     print("  [R] Restore (full machine setup)")
     job = input("\nChoice: ").strip().upper()
@@ -307,12 +367,15 @@ def main():
         restore_brews()
         restore_settings()
         setup_dock()
+        setup_startup_apps()
         launch_apps()
         final_prep()
     elif job == "U":
         update()
+    elif job == "M":
+        macos_updates()
     else:
-        print("Unknown option. Use U, B, or R.")
+        print("Unknown option. Use U, M, B, or R.")
 
     os.chdir(original_dir)
 
